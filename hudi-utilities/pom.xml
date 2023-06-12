@@ -102,6 +102,10 @@
           <groupId>javax.servlet</groupId>
           <artifactId>servlet-api</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -195,6 +199,10 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
       </exclusions>
     </dependency>
 
@@ -271,6 +279,12 @@
       <groupId>io.confluent</groupId>
       <artifactId>common-utils</artifactId>
       <version>${confluent.version}</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>io.confluent</groupId>
@@ -283,6 +297,12 @@
       <artifactId>kafka_${scala.binary.version}</artifactId>
       <version>${kafka.version}</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>zookeeper</artifactId>
+          <groupId>org.apache.zookeeper</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <!-- Httpcomponents -->
@@ -357,6 +377,12 @@
       <groupId>${hive.groupid}</groupId>
       <artifactId>hive-service</artifactId>
       <version>${hive.version}</version>
+    </dependency>
+
+    <!-- zookeeper -->
+    <dependency>
+      <artifactId>zookeeper</artifactId>
+      <groupId>org.apache.zookeeper</groupId>
     </dependency>
 
     <!-- Hoodie - Test -->
