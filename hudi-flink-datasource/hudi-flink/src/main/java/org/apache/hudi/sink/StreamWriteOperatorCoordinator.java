@@ -312,6 +312,7 @@ public class StreamWriteOperatorCoordinator
 
   private void initHiveSync() {
     this.hiveSyncExecutor = NonThrownExecutor.builder(LOG).waitForTasksFinish(true).build();
+    LOG.debug(String.format("hive_sync.conf.dir=%s", conf.getString(FlinkOptions.HIVE_SYNC_CONF_DIR, System.getenv("HIVE_CONF_DIR"))));
     this.hiveSyncContext = HiveSyncContext.create(conf, this.hiveConf);
   }
 

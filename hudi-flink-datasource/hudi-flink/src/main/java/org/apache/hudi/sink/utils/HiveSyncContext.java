@@ -85,7 +85,12 @@ public class HiveSyncContext {
     HiveConf hiveConf = new HiveConf();
     hiveConf.addResource(serConf.get());
     if (!FlinkOptions.isDefaultValueDefined(conf, FlinkOptions.HIVE_SYNC_METASTORE_URIS)) {
+      // 将Hive metastore uris 添加到 conf 中
       hadoopConf.set(HiveConf.ConfVars.METASTOREURIS.varname, conf.getString(FlinkOptions.HIVE_SYNC_METASTORE_URIS));
+      // TODO 参照该逻辑将认证必要参数写入 conf 中
+      hadoopConf.set(HiveConf.ConfVars.HIVE_AUTHORIZATION_ENABLED.varname, Boolean.FALSE.toString());
+      hadoopConf.set(HiveConf.ConfVars.METASTORE_USE_THRIFT_SASL.varname, Boolean.TRUE.toString());
+      hadoopConf.set(HiveConf.ConfVars.METASTORE_KERBEROS_PRINCIPAL.varname, "hive/hadoop.67fa2087_e174_4577_9ded_1c4d0b0092ee.com@67FA2087_E174_4577_9DED_1C4D0B0092EE.COM");
     }
     hiveConf.addResource(hadoopConf);
     return new HiveSyncContext(props, hiveConf);
