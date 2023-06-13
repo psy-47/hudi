@@ -46,21 +46,21 @@
     <module>hudi-utilities</module>
     <module>hudi-sync</module>
     <module>packaging/hudi-hadoop-mr-bundle</module>
-    <module>packaging/hudi-datahub-sync-bundle</module>
+<!--    <module>packaging/hudi-datahub-sync-bundle</module>-->
     <module>packaging/hudi-hive-sync-bundle</module>
-    <module>packaging/hudi-aws-bundle</module>
-    <module>packaging/hudi-gcp-bundle</module>
+<!--    <module>packaging/hudi-aws-bundle</module>-->
+<!--    <module>packaging/hudi-gcp-bundle</module>-->
     <module>packaging/hudi-spark-bundle</module>
-    <module>packaging/hudi-presto-bundle</module>
+<!--    <module>packaging/hudi-presto-bundle</module>-->
 <!--    <module>packaging/hudi-utilities-bundle</module>-->
 <!--    <module>packaging/hudi-utilities-slim-bundle</module>-->
     <module>packaging/hudi-timeline-server-bundle</module>
-    <module>packaging/hudi-trino-bundle</module>
+<!--    <module>packaging/hudi-trino-bundle</module>-->
     <module>hudi-examples</module>
     <module>hudi-flink-datasource</module>
-    <module>hudi-kafka-connect</module>
+<!--    <module>hudi-kafka-connect</module>-->
     <module>packaging/hudi-flink-bundle</module>
-    <module>packaging/hudi-kafka-connect-bundle</module>
+<!--    <module>packaging/hudi-kafka-connect-bundle</module>-->
     <module>hudi-tests-common</module>
   </modules>
 
@@ -323,6 +323,7 @@
         <configuration>
           <source>${java.version}</source>
           <target>${java.version}</target>
+          <encoding>utf8</encoding>
         </configuration>
       </plugin>
       <plugin>
@@ -468,6 +469,9 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
+          <configuration>
+            <encoding>UTF-8</encoding>
+          </configuration>
         </plugin>
         <plugin>
           <!-- excludes are inherited -->
@@ -1782,115 +1786,123 @@
         </plugins>
       </build>
     </profile>
-<!--    <profile>-->
-<!--      <id>javadocs</id>-->
-<!--      <build>-->
-<!--        <plugins>-->
-<!--          <plugin>-->
-<!--            <groupId>org.apache.maven.plugins</groupId>-->
-<!--            <artifactId>maven-compiler-plugin</artifactId>-->
-<!--            <configuration>-->
-<!--              <source>${java.version}</source>-->
-<!--              <target>${java.version}</target>-->
-<!--            </configuration>-->
-<!--          </plugin>-->
-<!--          <plugin>-->
-<!--            <groupId>net.alchim31.maven</groupId>-->
-<!--            <artifactId>scala-maven-plugin</artifactId>-->
-<!--            <version>${scala-maven-plugin.version}</version>-->
-<!--            <executions>-->
-<!--              <execution>-->
-<!--                <id>doc</id>-->
-<!--                <phase>generate-sources</phase>-->
-<!--                <goals>-->
-<!--                  <goal>compile</goal>-->
-<!--                </goals>-->
-<!--                <configuration>-->
-<!--                  <excludes>-->
-<!--                    <exclude>${project.basedir}/src/main/scala</exclude>-->
-<!--                  </excludes>-->
-<!--                  <checkMultipleScalaVersions>false</checkMultipleScalaVersions>-->
-<!--                </configuration>-->
-<!--              </execution>-->
-<!--            </executions>-->
-<!--            <configuration>-->
-<!--              <args>-->
-<!--                <arg>-P:genjavadoc:out=${project.build.directory}/genjavadoc</arg>-->
-<!--              </args>-->
-<!--              <compilerPlugins>-->
-<!--                <compilerPlugin>-->
-<!--                  <groupId>com.typesafe.genjavadoc</groupId>-->
-<!--                  <artifactId>genjavadoc-plugin_${scala.version}</artifactId>-->
-<!--                  <version>${genjavadoc-plugin.version}</version>-->
-<!--                </compilerPlugin>-->
-<!--              </compilerPlugins>-->
-<!--              <excludes>-->
-<!--                <exclude>**/*.scala</exclude>-->
-<!--              </excludes>-->
-<!--            </configuration>-->
-<!--          </plugin>-->
-<!--          <plugin>-->
-<!--            <groupId>org.codehaus.mojo</groupId>-->
-<!--            <artifactId>build-helper-maven-plugin</artifactId>-->
-<!--            <version>${build-helper-maven-plugin.version}</version>-->
-<!--            <executions>-->
-<!--              <execution>-->
-<!--                <phase>generate-sources</phase>-->
-<!--                <goals>-->
-<!--                  <goal>add-source</goal>-->
-<!--                </goals>-->
-<!--                <configuration>-->
-<!--                  <sources>-->
-<!--                    <source>${project.build.directory}/genjavadoc</source>-->
-<!--                  </sources>-->
-<!--                </configuration>-->
-<!--              </execution>-->
-<!--            </executions>-->
-<!--          </plugin>-->
-<!--          <plugin>-->
-<!--            <groupId>org.apache.maven.plugins</groupId>-->
-<!--            <artifactId>maven-javadoc-plugin</artifactId>-->
-<!--            <version>${maven-javadoc-plugin.version}</version>-->
-<!--            <executions>-->
-<!--              <execution>-->
-<!--                <id>aggregate</id>-->
-<!--                <goals>-->
-<!--                  <goal>aggregate</goal>-->
-<!--                </goals>-->
-<!--              </execution>-->
-<!--            </executions>-->
-<!--            <configuration>-->
-<!--              &lt;!&ndash; Turn off the javadoc doclint for now due to incomplete javadoc in the source-->
-<!--              <doclint>all,-missing</doclint>-->
-<!--              &ndash;&gt;-->
-<!--              <doclint>none</doclint>-->
-<!--              <detectLinks>true</detectLinks>-->
-<!--              <links>-->
-<!--                <link>https://avro.apache.org/docs/${avro.version}/api/java</link>-->
-<!--                <link>https://docs.spring.io/spring-shell/docs/1.2.0.RELEASE</link>-->
-<!--                <link>https://fasterxml.github.io/jackson-databind/javadoc/2.6</link>-->
-<!--                <link>https://hadoop.apache.org/docs/r${hadoop.version}/api</link>-->
-<!--                <link>https://hbase.apache.org/2.4/apidocs</link>-->
-<!--                <link>https://hive.apache.org/javadocs/r2.3.6/api</link>-->
-<!--                <link>https://javadoc.io/static/io.javalin/javalin/2.3.0</link>-->
-<!--                <link>https://javadoc.io/doc/org.apache.parquet/parquet-avro/${parquet.version}</link>-->
-<!--                <link>https://javadoc.io/static/org.apache.parquet/parquet-hadoop/${parquet.version}</link>-->
-<!--                <link>https://logging.apache.org/log4j/1.2/apidocs</link>-->
-<!--                <link>https://metrics.dropwizard.io/4.1.0/apidocs</link>-->
-<!--                <link>https://spark.apache.org/docs/${spark.version}/api/java</link>-->
-<!--              </links>-->
-<!--              <sourceFileExcludes>-->
-<!--                &lt;!&ndash;-->
-<!--                    Exclude the generated java files with the static reference to-->
-<!--                    the singleton instance of the Scala object, to avoid redundancy in javadoc-->
-<!--                &ndash;&gt;-->
-<!--                <exclude>**/*$.java</exclude>-->
-<!--              </sourceFileExcludes>-->
-<!--            </configuration>-->
-<!--          </plugin>-->
-<!--        </plugins>-->
-<!--      </build>-->
-<!--    </profile>-->
+    <profile>
+      <id>javadocs</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <configuration>
+              <source>${java.version}</source>
+              <target>${java.version}</target>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>net.alchim31.maven</groupId>
+            <artifactId>scala-maven-plugin</artifactId>
+            <version>${scala-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>doc</id>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>compile</goal>
+                </goals>
+                <configuration>
+                  <excludes>
+                    <exclude>${project.basedir}/src/main/scala</exclude>
+                  </excludes>
+                  <checkMultipleScalaVersions>false</checkMultipleScalaVersions>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <args>
+                <arg>-P:genjavadoc:out=${project.build.directory}/genjavadoc</arg>
+              </args>
+              <compilerPlugins>
+                <compilerPlugin>
+                  <groupId>com.typesafe.genjavadoc</groupId>
+                  <artifactId>genjavadoc-plugin_${scala.version}</artifactId>
+                  <version>${genjavadoc-plugin.version}</version>
+                </compilerPlugin>
+              </compilerPlugins>
+              <excludes>
+                <exclude>**/*.scala</exclude>
+              </excludes>
+              <skip>true</skip>
+              <encoding>UTF-8</encoding>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>build-helper-maven-plugin</artifactId>
+            <version>${build-helper-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <phase>generate-sources</phase>
+                <goals>
+                  <goal>add-source</goal>
+                </goals>
+                <configuration>
+                  <sources>
+                    <source>${project.build.directory}/genjavadoc</source>
+                  </sources>
+                </configuration>
+              </execution>
+            </executions>
+            <configuration>
+              <skip>true</skip>
+              <encoding>UTF-8</encoding>
+            </configuration>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>${maven-javadoc-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>aggregate</id>
+                <goals>
+                  <goal>aggregate</goal>
+                </goals>
+              </execution>
+            </executions>
+            <configuration>
+              <!-- Turn off the javadoc doclint for now due to incomplete javadoc in the source
+              <doclint>all,-missing</doclint>
+              -->
+              <doclint>none</doclint>
+              <detectLinks>true</detectLinks>
+              <links>
+                <link>https://avro.apache.org/docs/${avro.version}/api/java</link>
+                <link>https://docs.spring.io/spring-shell/docs/1.2.0.RELEASE</link>
+                <link>https://fasterxml.github.io/jackson-databind/javadoc/2.6</link>
+                <link>https://hadoop.apache.org/docs/r${hadoop.version}/api</link>
+                <link>https://hbase.apache.org/2.4/apidocs</link>
+                <link>https://hive.apache.org/javadocs/r2.3.6/api</link>
+                <link>https://javadoc.io/static/io.javalin/javalin/2.3.0</link>
+                <link>https://javadoc.io/doc/org.apache.parquet/parquet-avro/${parquet.version}</link>
+                <link>https://javadoc.io/static/org.apache.parquet/parquet-hadoop/${parquet.version}</link>
+                <link>https://logging.apache.org/log4j/1.2/apidocs</link>
+                <link>https://metrics.dropwizard.io/4.1.0/apidocs</link>
+                <link>https://spark.apache.org/docs/${spark.version}/api/java</link>
+              </links>
+              <sourceFileExcludes>
+                <!--
+                    Exclude the generated java files with the static reference to
+                    the singleton instance of the Scala object, to avoid redundancy in javadoc
+                -->
+                <exclude>**/*$.java</exclude>
+              </sourceFileExcludes>
+              <skip>true</skip>
+              <encoding>UTF-8</encoding>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <!-- Exists for backwards compatibility; profile doesn't do anything -->
     <profile>
       <id>scala-2.11</id>
