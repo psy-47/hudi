@@ -18,6 +18,9 @@
 
 package org.apache.hudi.sink.utils;
 
+import org.apache.flink.annotation.VisibleForTesting;
+import org.apache.flink.configuration.Configuration;
+import org.apache.hadoop.hive.conf.HiveConf;
 import org.apache.hudi.aws.sync.AwsGlueCatalogSyncTool;
 import org.apache.hudi.common.config.SerializableConfiguration;
 import org.apache.hudi.common.config.TypedProperties;
@@ -26,10 +29,6 @@ import org.apache.hudi.configuration.HadoopConfigurations;
 import org.apache.hudi.hive.HiveSyncTool;
 import org.apache.hudi.hive.ddl.HiveSyncMode;
 import org.apache.hudi.table.format.FilePathUtils;
-
-import org.apache.flink.annotation.VisibleForTesting;
-import org.apache.flink.configuration.Configuration;
-import org.apache.hadoop.hive.conf.HiveConf;
 
 import java.util.Properties;
 
@@ -87,10 +86,12 @@ public class HiveSyncContext {
     if (!FlinkOptions.isDefaultValueDefined(conf, FlinkOptions.HIVE_SYNC_METASTORE_URIS)) {
       // 将Hive metastore uris 添加到 conf 中
       hadoopConf.set(HiveConf.ConfVars.METASTOREURIS.varname, conf.getString(FlinkOptions.HIVE_SYNC_METASTORE_URIS));
-      // TODO 参照该逻辑将认证必要参数写入 conf 中
-      hadoopConf.set(HiveConf.ConfVars.HIVE_AUTHORIZATION_ENABLED.varname, Boolean.FALSE.toString());
-      hadoopConf.set(HiveConf.ConfVars.METASTORE_USE_THRIFT_SASL.varname, Boolean.TRUE.toString());
-      hadoopConf.set(HiveConf.ConfVars.METASTORE_KERBEROS_PRINCIPAL.varname, "hive/hadoop.67fa2087_e174_4577_9ded_1c4d0b0092ee.com@67FA2087_E174_4577_9DED_1C4D0B0092EE.COM");
+      // 参照该逻辑将认证必要参数写入 conf 中，当前默认将 properties. 开头的写入
+      for (String key : conf.keySet()) {
+        if (key.startsWith("properties.")) {
+          hadoopConf.set(key.substring(("properties.").length()), conf.getString(key, ""));
+        }
+      }
     }
     hiveConf.addResource(hadoopConf);
     return new HiveSyncContext(props, hiveConf);

@@ -122,6 +122,15 @@ The default Flink version supported is 1.14. Refer to the table below for buildi
 | `-Dflink1.13`              | hudi-flink1.13-bundle_2.11     | For Flink 1.13 and Scala 2.11                   |
 | `-Dflink1.13 -Dscala-2.12` | hudi-flink1.13-bundle_2.12     | For Flink 1.13 and Scala 2.12                   |
 
+## Program Package
+通过如下命令实现编译、打包、装载，profile 根据实际勾选配置
+```
+1、华为MRS适配必须先进 hudi-common的编辑，不需要指定 profile
+comile[package、install] -D skipTests -D rat.skip=true -D maven.test.skip=true -D gpg.skip=true -D maven.javadoc.skip=true -f pom.xml
+2、进行整个项目的编辑、打包、装载
+comile[package、install] -D skipTests -D rat.skip=true -D maven.test.skip=true -D gpg.skip=true -D maven.javadoc.skip=true -f pom.xml -P apache-release,spark2,huaweicloudsdk,flink-bundle-shade-hive3-mrs-311,JDK1.8,mrs-311,Nexus-48,flink1.13
+```
+
 ## Running Tests
 
 Unit tests can be run with maven profile `unit-tests`.

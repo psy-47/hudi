@@ -18,9 +18,6 @@
 
 package org.apache.hudi.hive;
 
-import org.apache.hadoop.hive.ql.security.authorization.HiveAuthorizationProvider;
-import org.apache.hadoop.hive.ql.session.SessionState;
-import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.hudi.common.model.HoodieFileFormat;
 import org.apache.hudi.common.table.TableSchemaResolver;
 import org.apache.hudi.common.table.timeline.HoodieInstant;
@@ -71,7 +68,6 @@ public class HoodieHiveSyncClient extends HoodieSyncClient {
   protected final HiveSyncConfig config;
   private final String databaseName;
   DDLExecutor ddlExecutor;
-  private SessionState sessionState;
   private IMetaStoreClient client;
 
   public HoodieHiveSyncClient(HiveSyncConfig config) {
@@ -82,16 +78,8 @@ public class HoodieHiveSyncClient extends HoodieSyncClient {
     // Support JDBC, HiveQL and metastore based implementations for backwards compatibility. Future users should
     // disable jdbc and depend on metastore client for all hive registrations
     try {
-      LOG.debug(String.format("Hive current user：%s", UserGroupInformation.getCurrentUser().getShortUserName()));
       LOG.debug(String.format("Hive sync 配置：%s", config));
       LOG.debug(String.format("Hive config 配置：%s", config.getHiveConf().toString()));
-
-      long startTime = System.currentTimeMillis();
-      this.sessionState = new SessionState(config.getHiveConf(), UserGroupInformation.getCurrentUser().getShortUserName());
-      SessionState.start(this.sessionState);
-      final HiveAuthorizationProvider authorizer = this.sessionState.getAuthorizer();
-      this.sessionState.setCurrentDatabase(databaseName);
-      LOG.debug(String.format("Hive session 连接成功, user name: %s, databaseName: %s", authorizer.getAuthenticator().getUserName(), databaseName));
 
       if (!StringUtils.isNullOrEmpty(config.getString(HIVE_SYNC_MODE))) {
         HiveSyncMode syncMode = HiveSyncMode.of(config.getString(HIVE_SYNC_MODE));
@@ -112,11 +100,7 @@ public class HoodieHiveSyncClient extends HoodieSyncClient {
         ddlExecutor = config.getBoolean(HIVE_USE_JDBC) ? new JDBCExecutor(config) : new HiveQueryDDLExecutor(config);
       }
       this.client = Hive.get(config.getHiveConf()).getMSC();
-
-      long endTime = System.currentTimeMillis();
-      LOG.info(String.format("Time taken to start SessionState and create Driver and client: %s ms", new Object[] { Long.valueOf(endTime - startTime) }));
     } catch (Exception e) {
-      this.sessionState = null;
       throw new HoodieHiveSyncException("Failed to create HiveMetaStoreClient", e);
     }
   }
@@ -305,10 +289,6 @@ public class HoodieHiveSyncClient extends HoodieSyncClient {
       if (client != null) {
         Hive.closeCurrent();
         client = null;
-      }
-      if (this.sessionState != null) {
-        this.sessionState.close();
-        this.sessionState = null;
       }
     } catch (Exception e) {
       LOG.error("Could not close connection ", e);
